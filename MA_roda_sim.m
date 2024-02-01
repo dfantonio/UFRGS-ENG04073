@@ -42,7 +42,8 @@ load('modelo_5h.mat') %Carrega os parâmetros do modelo
 Tsim=0.1; %[s] tempo total de simulação
 
 D0=0.3; %Valor do ciclo de trabalho D no ponto de operação
-dD=0.01; %Amplitude do salto em deltaD
+% dD=0.01; %Amplitude do salto em deltaD
+dD=0.0; %Amplitude do salto em deltaD
 tdD=Tsim/3; %Tempo em que é aplicadoo salto em deltaD
 
 Vin0=15.5; %[V] Valor de Vin no ponto de operação
@@ -83,34 +84,41 @@ sim('MA_simula_dsrac',Tsim); %roda a simulação
 
 
 %% Plot dos sinais
-subplot(1,1,1)
-plot(simT,simVo,'LineWidth',2,'Color','red')
-grid;xlabel('t [s]');ylabel('Vo [V]');axis([0 Tsim 0.99*min(simVo) 1.01*max(simVo)])
-
-hold on
-
-plot(simT,simVoCalculado,'LineWidth',2)
-
-hold off
-legend('Referência','Modelo')
+close all
+% subplot(1,1,1)
+% plot(simT,simVo,'LineWidth',2,'Color','red')
+% grid;xlabel('t [s]');ylabel('Vo [V]');axis([0 Tsim 0.99*min(simVo) 1.01*max(simVo)])
 % 
-% subplot(4,1,2)
-% plot(simT,simD,'LineWidth',2)
-% grid;xlabel('t [s]');ylabel('D');axis([0 Tsim 0.99*min(simD) 1.01*max(simD)])
+% hold on
 % 
-% subplot(4,1,3)
-% plot(simT,simVin,'LineWidth',2)
-% grid;xlabel('t [s]');ylabel('Vin [V]');axis([0 Tsim 0.99*min(simVin) 1.01*max(simVin)])
+% plot(simT,simVoCalculado,'LineWidth',2)
+% 
+% hold off
+% legend('Referência','Modelo')
 
-% Cria nova janela
 figure
 
-subplot(2,1,1)
-plot(simT,erro_abs,'LineWidth',2,'Color','red')
-grid;xlabel('t [s]');ylabel('Erro absoluto');axis([0 Tsim 0.99*min(erro_abs) 1.01*max(erro_abs)])
+subplot(1,2,1)
+plot(simT,simVo,'LineWidth',2,'Color','red')
+grid;xlabel('t [s]');ylabel('Vo [V]');axis([0.09 Tsim 0.99*min(simVo) 1.01*max(simVo)])
 
-subplot(2,1,2)
-plot(simT,erro_quad,'LineWidth',2,'Color','red')
-grid;xlabel('t [s]');ylabel('Erro quadrático');axis([0 Tsim 0.99*min(erro_quad) 1.01*max(erro_quad)])
+% subplot(1,2,2)
+% plot(simT,simD,'LineWidth',2)
+% grid;xlabel('t [s]');ylabel('D');axis([0.0 Tsim 0.99*min(simD) 1.01*max(simD)])
+
+subplot(1,2,2)
+plot(simT,simVin,'LineWidth',2)
+grid;xlabel('t [s]');ylabel('Vin [V]');axis([0.09 Tsim 0.99*min(simVin) 1.01*max(simVin)])
+
+% Cria nova janela
+% figure
+
+% subplot(2,1,1)
+% plot(simT,erro_abs,'LineWidth',2,'Color','red')
+% grid;xlabel('t [s]');ylabel('Erro absoluto');axis([0 Tsim 0.99*min(erro_abs) 1.01*max(erro_abs)])
+% 
+% subplot(2,1,2)
+% plot(simT,erro_quad,'LineWidth',2,'Color','red')
+% grid;xlabel('t [s]');ylabel('Erro quadrático');axis([0 Tsim 0.99*min(erro_quad) 1.01*max(erro_quad)])
 
 
