@@ -35,10 +35,9 @@
 % 2021. Dissertação de mestrado. PPGEE-UFRGS
 
 %% Carregamento do modelo e definições básicas
-clear all;close all;clc; %limpa as variáveis, fecha gráficos e limpa a command window
+close all; %limpa as variáveis, fecha gráficos e limpa a command window
 load('modelo_5h.mat') %Carrega os parâmetros do modelo
 
-%% Simulação do sistema em malha fechada
 
 Tsim=0.3; %[s] tempo total de simulação
 fa=100e3; %[Hz] frequência de amostragem 2*fs
@@ -57,15 +56,46 @@ ref=90; %[V] sinal de refência
 dref=10; %[V] salto no sinal de referência
 tref=Tsim/3;% [s] instante de tempo em que é dado o salto de referência
 
+[Kp,Ki,Kd,Tf] = piddata(C_cont);
 
-nc=[1 1170 3.947e6]*0.049114; %coeficientes do numerador do controlador em tempo contínuo
-dc=[1 1.6e4 0]; %coeficientes do denominador do controlador em tempo contínuo
+kp=Kp
+ti=Kp/Ki
+P=-C_cont.p{1,1}(2)
+%P=-C_cont.den{1,1}(2);
+td=Kd/(Kp*P*Tf)
 
-Cc=tf(nc,dc); %função de transferência do controlador em tempo contínuo
+% ti = 0.000248327759;
+% td = 0.00105071549;
+% kp = 0.00225335952;
+% P = 16100;
 
-CD = c2d(Cc,Ta,'matched'); %discretização do controlador
+Cps = tf([kp],[1]);
+Cis = tf([kp/ti],[1 0]);
+Cds = tf([kp*ti*P 0],[1 P]);
+Csum = Cps + Cds + Cis;
 
-[nd,dd]=tfdata(CD,'v'); %cálculo dos coeficientes dos numerador e denominador do controlador em tempo discreto
+Cdp = c2d(Cps,Ta,'tustin');
+Cdi = c2d(Cis,Ta,'tustin');
+Cdd = c2d(Cds,Ta,'tustin');
+
+[np,dp] = tfdata(Cdp,'v');
+[ni,di] = tfdata(Cdi,'v');
+[nd,dd] = tfdata(Cdd,'v');
+
+
+%nc=[1 1170 3.947e6]*0.049114; %coeficientes do numerador do controlador em tempo contínuo
+%dc=[1 1.6e4 0]; %coeficientes do denominador do controlador em tempo contínuo
+
+%Cc=tf(nc,dc); %função de transferência do controlador em tempo contínuo
+
+CD = c2d(C_cont,Ta,'matched'); %discretização do controlador
+
+[Kp,Ki,Kd,Tf] = piddata(CD);
+%Kd=Kd/Tf;
+
+[n_disc,d_disc]=tfdata(CD,'v'); %cálculo dos coeficientes dos numerador e denominador do controlador em tempo discreto
+
+%% Simulação do sistema em malha fechada
 
 sim('MF_simula_disc',Tsim); %roda a simulação
 

@@ -1,0 +1,126 @@
+% Simulação do conversor DSRAC
+% Jeferson Vieira Flores
+% 28/05/2022
+% 
+% Modelo de pequenos sinais do conversor DSRAC apresenado no em [1]. O
+% modelo foi obtido com 5 harmônicas, fs=50kHz e ponto de operação
+% Vin=15.5V e D=0.3. 
+%
+% Por ser um modelo de pequenos sinais, a entrada do
+% modelo deve ser sempre D=0.3+deltaD. O sinal de controle é saturado entre 
+% 0 e 1 na entrada da planta.
+% 
+% Na simulação é aplicado um salto de distúrbio em Vin de amplitude 2V no
+% instante de tempo (2/3)*Tsim, onde Tsim é o tempo total de simulação
+% definido abaixo.
+% 
+% Passo de simulação do conversor de "tempo contínuo" foi fixado em de
+% 1e-7s. Valores maiores podem causar instabildade numérica
+% 
+% Ao rodar o simulink, o modelo salva automaticamente os sinais D, Vin e Vo de "tempo contínuo" 
+% nas variáveis simD, simVin e simVo, respectivamente.
+% 
+% Parâmetros do circuito do conversor:
+% R = 250 Ohm;
+% n = 4;
+% Ron = 0.0075 Ohm; 
+% Lm = 15e-6 H;  
+% Ls = 1e-6 H;
+% Cc = 150e-6 F; 
+% Cr = 1e-6 F; 
+% Co = 150e-6 F;
+% 
+% [1]Guilherme Salati. Modelagem e controle de um conversor CC-CC 
+% duplo série-ressonante com grampeamento ativo. 
+% 2021. Dissertação de mestrado. PPGEE-UFRGS
+
+%% Carregamento o modelo e definições básicas
+clear all;close all;clc; %limpa as variáveis, fecha gráficos e limpa a command window
+load('modelo_5h.mat') %Carrega os parâmetros do modelo
+
+%% Simulação do modelo 
+Tsim=0.1; %[s] tempo total de simulação
+
+D0=0.3; %Valor do ciclo de trabalho D no ponto de operação
+% dD=0.01; %Amplitude do salto em deltaD
+dD=0.0; %Amplitude do salto em deltaD
+tdD=Tsim/3; %Tempo em que é aplicadoo salto em deltaD
+
+Vin0=15.5; %[V] Valor de Vin no ponto de operação
+dVin=2; %[V] Amplitude do salto em deltaVin
+tdVin=2*Tsim/3; %Tempo em que é aplicadoo salto em deltaVin
+
+%% Cálculo das funções de transferência
+% Calcula G(s)
+t_0=0.0333;
+t_pico=0.0343;
+y_max=89.97;
+
+y_0=88.2;
+y_inf=89.46;
+
+u_0=0.3;
+u_inf=0.31;
+
+[tf_G_num,tf_G_den]=calcula_func_transf(t_0,t_pico,y_max,y_0,y_inf,u_0,u_inf);
+tf_G = tf(tf_G_num,tf_G_den);
+
+% Calcula Gq
+t_0=0.06667;
+t_pico=0.06764;
+y_max=104;
+
+y_0=88.2;
+y_inf=99.58;
+
+u_0=15.5;
+u_inf=17.5;
+
+[tf_Gq_num,tf_Gq_den] = calcula_func_transf(t_0,t_pico,y_max,y_0,y_inf,u_0,u_inf);
+tf_Gq = tf(tf_Gq_num,tf_Gq_den);
+
+%% Roda a simulação
+
+sim('MA_simula_dsrac',Tsim); %roda a simulação
+
+
+
+%% Plot dos sinais
+close all
+% subplot(1,1,1)
+% plot(simT,simVo,'LineWidth',2,'Color','red')
+% grid;xlabel('t [s]');ylabel('Vo [V]');axis([0 Tsim 0.99*min(simVo) 1.01*max(simVo)])
+% 
+% hold on
+% 
+% plot(simT,simVoCalculado,'LineWidth',2)
+% 
+% hold off
+% legend('Referência','Modelo')
+
+figure
+
+subplot(1,2,1)
+plot(simT,simVo,'LineWidth',2,'Color','red')
+grid;xlabel('t [s]');ylabel('Vo [V]');axis([0.09 Tsim 0.99*min(simVo) 1.01*max(simVo)])
+
+% subplot(1,2,2)
+% plot(simT,simD,'LineWidth',2)
+% grid;xlabel('t [s]');ylabel('D');axis([0.0 Tsim 0.99*min(simD) 1.01*max(simD)])
+
+subplot(1,2,2)
+plot(simT,simVin,'LineWidth',2)
+grid;xlabel('t [s]');ylabel('Vin [V]');axis([0.09 Tsim 0.99*min(simVin) 1.01*max(simVin)])
+
+% Cria nova janela
+% figure
+
+% subplot(2,1,1)
+% plot(simT,erro_abs,'LineWidth',2,'Color','red')
+% grid;xlabel('t [s]');ylabel('Erro absoluto');axis([0 Tsim 0.99*min(erro_abs) 1.01*max(erro_abs)])
+% 
+% subplot(2,1,2)
+% plot(simT,erro_quad,'LineWidth',2,'Color','red')
+% grid;xlabel('t [s]');ylabel('Erro quadrático');axis([0 Tsim 0.99*min(erro_quad) 1.01*max(erro_quad)])
+
+
