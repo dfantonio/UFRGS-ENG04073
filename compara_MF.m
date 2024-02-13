@@ -1,7 +1,7 @@
 %Compara o desempenho do sistema em malha fechada com o controlador padrão.
 %O arquivo minha_sim.mat deve ser gerado como mostrado no arquivo MF_roda_sim_disc.m.
 
-close all;clc; %limpa as variáveis, fecha gráficos e limpa a command window
+close all; %limpa as variáveis, fecha gráficos e limpa a command window
 
 load('sim_padrao.mat'); %Arquivo de simulação com os sinais do controlador padrão
 

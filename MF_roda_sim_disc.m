@@ -101,42 +101,45 @@ sim('MF_simula_disc',Tsim); %roda a simulação
 
 save('minha_sim.mat','simTDisc','simDDisc','simRDisc','simEDisc','simVoDisc') %Salva o dados para utilizaçao no arquivo compara_MF
 
+%% Compara com a referência
+compara_MF
+
 %% Plot dos sinais
-close all;
-
-subplot(1,1,1)
-hold on
-stairs(simTDisc,simRDisc,'k-.','LineWidth',2)
-stairs(simTDisc,simVoDisc,'LineWidth',2)
-plot(simT,simVo,'LineWidth',2,'Color','red','LineStyle','--')
-hold off
-grid;legend('r[k]','Vo[k]','Vo(t)');xlabel('t [s]');ylabel('Sinais [V]');axis([0 Tsim 0.99*min(simVoDisc) 1.01*max(simVoDisc)])
-
-figure
-
-subplot(4,1,1)
-hold on
-stairs(simTDisc,simRDisc,'k-.','LineWidth',2)
-stairs(simTDisc,simVoDisc,'LineWidth',2)
-plot(simT,simVo,'LineWidth',2,'Color','red','LineStyle','--')
-hold off
-grid;legend('r[k]','Vo[k]','Vo(t)');xlabel('t [s]');ylabel('Sinais [V]');axis([0 Tsim 0.99*min(simVoDisc) 1.01*max(simVoDisc)])
-
-subplot(4,1,2)
-hold on
-stairs(simTDisc,simDDisc,'LineWidth',2)
-plot(simT,simDCont,'LineWidth',2,'Color','red','LineStyle','--')
-hold off
-grid;legend('D[k]','D(t)');xlabel('t [s]');ylabel('Controle D');axis([0 Tsim 0.99*min(simDDisc) 1.01*max(simDDisc)])
-
-subplot(4,1,3)
-hold on
-stairs(simTDisc,simEDisc,'LineWidth',2)
-plot(simT,simECont,'LineWidth',2,'Color','red','LineStyle','--')
-hold off
-grid;legend('e[k]','e(t)');xlabel('t [s]');ylabel('Erro [V]');axis([0 Tsim 0.99*min(simEDisc) 1.01*max(simEDisc)])
-
-subplot(4,1,4)
-stairs(simTDisc,simVinDisc,'LineWidth',2)
-grid;xlabel('t [s]');ylabel('Vin [V]');axis([0 Tsim 0.99*min(simVinDisc) 1.01*max(simVinDisc)])
+% close all;
+% 
+% subplot(1,1,1)
+% hold on
+% stairs(simTDisc,simRDisc,'k-.','LineWidth',2)
+% stairs(simTDisc,simVoDisc,'LineWidth',2)
+% plot(simT,simVo,'LineWidth',2,'Color','red','LineStyle','--')
+% hold off
+% grid;legend('r[k]','Vo[k]','Vo(t)');xlabel('t [s]');ylabel('Sinais [V]');axis([0 Tsim 0.99*min(simVoDisc) 1.01*max(simVoDisc)])
+% 
+% figure
+% 
+% subplot(4,1,1)
+% hold on
+% stairs(simTDisc,simRDisc,'k-.','LineWidth',2)
+% stairs(simTDisc,simVoDisc,'LineWidth',2)
+% plot(simT,simVo,'LineWidth',2,'Color','red','LineStyle','--')
+% hold off
+% grid;legend('r[k]','Vo[k]','Vo(t)');xlabel('t [s]');ylabel('Sinais [V]');axis([0 Tsim 0.99*min(simVoDisc) 1.01*max(simVoDisc)])
+% 
+% subplot(4,1,2)
+% hold on
+% stairs(simTDisc,simDDisc,'LineWidth',2)
+% plot(simT,simDCont,'LineWidth',2,'Color','red','LineStyle','--')
+% hold off
+% grid;legend('D[k]','D(t)');xlabel('t [s]');ylabel('Controle D');axis([0 Tsim 0.99*min(simDDisc) 1.01*max(simDDisc)])
+% 
+% subplot(4,1,3)
+% hold on
+% stairs(simTDisc,simEDisc,'LineWidth',2)
+% plot(simT,simECont,'LineWidth',2,'Color','red','LineStyle','--')
+% hold off
+% grid;legend('e[k]','e(t)');xlabel('t [s]');ylabel('Erro [V]');axis([0 Tsim 0.99*min(simEDisc) 1.01*max(simEDisc)])
+% 
+% subplot(4,1,4)
+% stairs(simTDisc,simSat,'LineWidth',2)
+% grid;xlabel('t [s]');ylabel('Vin [V]');axis([0 Tsim 0.99*min(simVinDisc) 1.01*max(simVinDisc)])
 
